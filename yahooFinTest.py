@@ -19,9 +19,9 @@ def fetch_and_plot_data():
         
         # Plot the closing prices
         plt.figure(figsize=(10, 5))
-        plt.plot(data1['Close'], label=f'{ticker1} Close Price')
-        plt.plot(data2['Close'], label=f'{ticker2} Close Price')
-        plt.title(f'{ticker1} & {ticker2} ETF Closing Prices')
+        plt.plot(data1['Close'], label=f'{ticker1.upper()} Close Price')
+        plt.plot(data2['Close'], label=f'{ticker2.upper()} Close Price')
+        plt.title(f'{ticker1.upper()} & {ticker2.upper()} ETF Closing Prices')
         plt.xlabel('Date')
         plt.ylabel('Close Price')
         plt.legend()
