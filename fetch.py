@@ -1,67 +1,50 @@
 import yfinance as yf
-import json
 import matplotlib.pyplot as plt
 from datetime import datetime
+import tkinter as tk
+from tkinter import messagebox
 
-# Function to fetch data
-def fetch_data(ticker, start_date, end_date):
-    stock = yf.Ticker(ticker)
-    data = stock.history(start=start_date, end=end_date)
-    return data
+def fetch_and_plot_data():
+    # Get the ticker symbols from the entry widgets
+    ticker1 = entry1.get()
+    ticker2 = entry2.get()
+    
+    # Fetch data for the input tickers
+    try:
+        data1 = yf.download(ticker1, start='2021-01-01', end=datetime.today().strftime('%Y-%m-%d'))
+        data2 = yf.download(ticker2, start='2021-01-01', end=datetime.today().strftime('%Y-%m-%d'))
+        
+        if data1.empty or data2.empty:
+            raise ValueError("One or both of the ticker symbols are invalid.")
+        
+        # Plot the closing prices
+        plt.figure(figsize=(10, 5))
+        plt.plot(data1['Close'], label=f'{ticker1.upper()} Close Price')
+        plt.plot(data2['Close'], label=f'{ticker2.upper()} Close Price')
+        plt.title(f'{ticker1.upper()} & {ticker2.upper()} ETF Closing Prices')
+        plt.xlabel('Date')
+        plt.ylabel('Close Price')
+        plt.legend()
+        plt.show()
+    except Exception as e:
+        messagebox.showerror("Error", str(e))
 
-# Function to save data to a JSON file
-def save_to_json(data, filename):
-    # Convert keys to string for JSON serialization
-    data_str_keys = {str(key): value for key, value in data.items()}
-    with open(filename, 'w') as f:
-        json.dump(data_str_keys, f)
+# Create the main window
+root = tk.Tk()
+root.title("Stock Ticker Input")
 
-# Function to load data from a JSON file
-def load_from_json(filename):
-    with open(filename, 'r') as f:
-        data = json.load(f)
-    # Convert keys back to datetime for further processing
-    data_dt_keys = {datetime.strptime(key, '%Y-%m-%d %H:%M:%S'): value for key, value in data.items()}
-    return data_dt_keys
+# Create and place the labels and entry widgets
+tk.Label(root, text="Enter the first ticker symbol:").grid(row=0, column=0, padx=10, pady=10)
+entry1 = tk.Entry(root)
+entry1.grid(row=0, column=1, padx=10, pady=10)
 
-# Function to plot data
-def plot_data(data, title):
-    plt.figure(figsize=(12, 6))
-    for ticker, df in data.items():
-        dates = list(df.keys())
-        closes = [value['Close'] for value in df.values()]
-        plt.plot(dates, closes, label=ticker)
-    plt.title(title)
-    plt.xlabel('Date')
-    plt.ylabel('Close Price')
-    plt.legend()
-    plt.show()
+tk.Label(root, text="Enter the second ticker symbol:").grid(row=1, column=0, padx=10, pady=10)
+entry2 = tk.Entry(root)
+entry2.grid(row=1, column=1, padx=10, pady=10)
 
-# Specify the date range
-start_date = '2023-01-01'
-end_date = '2023-12-31'
+# Create and place the button
+button = tk.Button(root, text="Fetch and Plot Data", command=fetch_and_plot_data)
+button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
 
-# Fetch data for SOXL and SOXS
-soxl_data = fetch_data('SOXL', start_date, end_date)
-soxs_data = fetch_data('SOXS', start_date, end_date)
-
-# Convert data to dictionary format for JSON serialization
-soxl_data_dict = soxl_data.to_dict('index')
-soxs_data_dict = soxs_data.to_dict('index')
-
-# Save data to JSON files
-save_to_json({'SOXL': soxl_data_dict}, 'soxl_data.json')
-save_to_json({'SOXS': soxs_data_dict}, 'soxs_data.json')
-
-# Load data from JSON files
-loaded_soxl_data = load_from_json('soxl_data.json')
-loaded_soxs_data = load_from_json('soxs_data.json')
-
-# Combine loaded data
-combined_data = {
-    'SOXL': loaded_soxl_data,
-    'SOXS': loaded_soxs_data
-}
-
-# Plot the data
-plot_data(combined_data, 'SOXL and SOXS ETF Prices')
+# Run the main event loop
+root.mainloop()

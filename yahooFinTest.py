@@ -44,7 +44,7 @@ entry2.grid(row=1, column=1, padx=10, pady=10)
 
 # Create and place the button
 button = tk.Button(root, text="Fetch and Plot Data", command=fetch_and_plot_data)
-button.grid(row=2, column=0, columnspan=2, padx=10, pady=10)
+button.grid(row=3, column=0, columnspan=2, padx=10, pady=10)
 
 # Run the main event loop
 root.mainloop()
