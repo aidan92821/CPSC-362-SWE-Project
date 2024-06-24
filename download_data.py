@@ -15,8 +15,8 @@ def download_stock_data(symbol, start_date, end_date):
     DataFrame: A Pandas DataFrame containing the historical stock data.
     """
     data = yf.download(symbol, start=start_date, end=end_date)
-    print(f"Downloaded data for {symbol}:")
-    print(data.head())  # Print first few rows of the data for verification
+    if data.empty:
+        raise ValueError(f"No data found for symbol: {symbol}")
     return data
 
 def save_to_json(data, filename):

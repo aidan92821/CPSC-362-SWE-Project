@@ -1,0 +1,4 @@
+pandas
+yfinance
+pyqt5
+pyqtgraph
