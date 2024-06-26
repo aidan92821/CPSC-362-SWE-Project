@@ -4,44 +4,77 @@ from PyQt5.QtCore import QDate, pyqtSignal
 import download_data
 
 class DownloadDataGUI(QMainWindow):
+    """
+    A class to represent the GUI for downloading stock data.
+    
+    Attributes
+    ----------
+    finished : pyqtSignal
+        A custom signal emitted when the "Finish Downloads" button is clicked.
+    
+    Methods
+    -------
+    __init__():
+        Constructs the necessary attributes for the GUI object.
+    initUI():
+        Initializes the user interface.
+    download_data():
+        Downloads the stock data based on user input and saves it as a JSON file.
+    finish_downloads():
+        Emits the finished signal and closes the GUI.
+    """
+    
     finished = pyqtSignal()
 
     def __init__(self):
+        """Constructs all the necessary attributes for the GUI object."""
         super().__init__()
         self.setWindowTitle('Download Stock Data')
         self.setGeometry(100, 100, 300, 300)
         self.initUI()
 
     def initUI(self):
+        """Initializes the user interface by setting up widgets and layouts."""
         main_widget = QWidget(self)
         self.setCentralWidget(main_widget)
         layout = QVBoxLayout(main_widget)
 
+        # Input field for ticker symbol
         self.symbol_input = QLineEdit(self)
         self.symbol_input.setPlaceholderText('Enter ticker symbol (e.g., SOXL)')
         layout.addWidget(self.symbol_input)
 
+        # Calendar widget for start date selection
         self.start_date = QCalendarWidget(self)
         self.start_date.setGridVisible(True)
-        self.start_date.setSelectedDate(QDate(2021, 1, 1))
+        self.start_date.setMinimumDate(QDate(2021, 1, 1))  # Minimum date set to January 1, 2021
         self.start_date.setMaximumDate(QDate.currentDate())
+        self.start_date.setSelectedDate(QDate(2021, 1, 1))
         layout.addWidget(self.start_date)
 
+        # Calendar widget for end date selection
         self.end_date = QCalendarWidget(self)
         self.end_date.setGridVisible(True)
-        self.end_date.setSelectedDate(QDate.currentDate())
+        self.end_date.setMinimumDate(QDate(2021, 1, 1))  # Minimum date set to January 1, 2021
         self.end_date.setMaximumDate(QDate.currentDate())
+        self.end_date.setSelectedDate(QDate.currentDate())
         layout.addWidget(self.end_date)
 
+        # Button to add ticker symbol and download data
         add_button = QPushButton('Add Ticker Symbol', self)
         add_button.clicked.connect(self.download_data)
         layout.addWidget(add_button)
 
+        # Button to finish downloads and close the GUI
         self.finish_button = QPushButton('Finish Downloads', self)
         self.finish_button.clicked.connect(self.finish_downloads)
         layout.addWidget(self.finish_button)
 
     def download_data(self):
+        """
+        Downloads the stock data based on user input and saves it as a JSON file.
+        Displays an error message if the ticker symbol is invalid or the data cannot be fetched.
+        """
         symbol = self.symbol_input.text().strip().upper()
         if symbol not in ['SOXL', 'SOXS']:
             QMessageBox.critical(self, 'Error', f"Sorry, '{symbol}' is not able to be fetched. Please try another ticker symbol.")
@@ -59,6 +92,7 @@ class DownloadDataGUI(QMainWindow):
             QMessageBox.critical(self, 'Error', str(e))
 
     def finish_downloads(self):
+        """Emits the finished signal and closes the GUI."""
         self.finished.emit()
         self.close()
 

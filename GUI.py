@@ -33,7 +33,7 @@ class CalendarPlotApp(QMainWindow):
         layout.addLayout(cal_layout)
 
         self.combo = QComboBox(self)
-        self.combo.addItem("Select Ticker")
+        self.combo.setPlaceholderText("Select a ticker symbol")
         self.combo.currentIndexChanged.connect(self.update_plot)
         layout.addWidget(self.combo)
 
@@ -44,10 +44,6 @@ class CalendarPlotApp(QMainWindow):
         self.sma_button.clicked.connect(self.run_sma_backtest)
         layout.addWidget(self.sma_button)
 
-        self.close_button = QPushButton('Close', self)
-        self.close_button.clicked.connect(self.close)
-        layout.addWidget(self.close_button)
-
         self.result_label = QLabel(self)
         layout.addWidget(self.result_label)
 
@@ -56,11 +52,10 @@ class CalendarPlotApp(QMainWindow):
 
     def update_combo_box(self):
         self.combo.clear()
-        self.combo.addItem("Select Ticker")
         stock_files = [f for f in os.listdir() if f.endswith('_data.json')]
         self.combo.addItems([f.split('_')[0] for f in stock_files])
+        self.combo.setCurrentIndex(-1)  # Set combo box to null initially
         if stock_files:
-            self.combo.setCurrentIndex(0)
             self.load_data(stock_files[0])
         else:
             today = QDate.currentDate()
@@ -80,16 +75,19 @@ class CalendarPlotApp(QMainWindow):
         min_date = min(self.data.keys())
         max_date = max(self.data.keys())
 
-        self.calendar1.setMinimumDate(QDate(min_date.year, min_date.month, min_date.day))
+        self.calendar1.setMinimumDate(QDate(2021, 1, 1))  # Set minimum date to project start date
         self.calendar1.setMaximumDate(QDate(max_date.year, max_date.month, max_date.day))
         self.calendar1.setSelectedDate(QDate(min_date.year, min_date.month, min_date.day))
 
-        self.calendar2.setMinimumDate(QDate(min_date.year, min_date.month, min_date.day))
+        self.calendar2.setMinimumDate(QDate(2021, 1, 1))  # Set minimum date to project start date
         self.calendar2.setMaximumDate(QDate(max_date.year, max_date.month, max_date.day))
         self.calendar2.setSelectedDate(QDate(max_date.year, max_date.month, max_date.day))
 
     def update_plot(self):
         self.plot_widget.clear()
+        if self.combo.currentIndex() == -1:
+            return
+
         date1 = self.calendar1.selectedDate()
         date2 = self.calendar2.selectedDate()
         option = self.combo.currentText()
@@ -99,9 +97,6 @@ class CalendarPlotApp(QMainWindow):
 
         if py_date1 > py_date2:
             py_date1, py_date2 = py_date2, py_date1
-
-        if option == "Select Ticker":
-            return
 
         with open(f"{option}_data.json", 'r') as f:
             data_list = json.load(f)

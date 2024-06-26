@@ -16,9 +16,7 @@ def main():
         # Create and show the main GUI window
         main_window = CalendarPlotApp()
         main_window.show()
-        
-        # Ensure the application continues running until all windows are closed
-        app.exec_()
+        main_window.setAttribute(main_window.WA_DeleteOnClose)  # Ensure the window can be closed
 
     # Connect the finished signal to the function to show the main GUI
     download_window.finished.connect(show_main_gui)

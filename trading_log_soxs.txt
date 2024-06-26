@@ -1,4 +1,0 @@
-DATE        buy/sell  STA     LTA     balance        amount of stock
-----------------------------------------------------------------------
-
-No buy or sell signals have been triggered between the dates selected.
