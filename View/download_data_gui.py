@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLi
 from PyQt5.QtCore import QDate, pyqtSignal
 import Model.download_data as download_data
 from Model.pubsub import Publisher
+from Model.adapterpattern import get_historical_data, DataSourceType
 
 class DownloadDataGUI(QMainWindow):
     """
@@ -98,29 +99,6 @@ class DownloadDataGUI(QMainWindow):
         self.finished.emit()
         self.close()
 
-class DataSourceAdapter:
-    def __init__(self, download_function, save_function):
-        self.download_function = download_function
-        self.save_function = save_function
-
-    def download_data(self, symbol, start_date, end_date):
-        # Implementation of how to adapt download_function to DataSource interface
-        return self.download_function(symbol, start_date, end_date)
-
-    def save_data(self, data, file_name):
-        # Implementation of how to adapt save_function to DataSource interface
-        self.save_function(data, file_name)
-
-        
-class DataSource:
-    def __init__(self, initial_data=None):
-        self._data = initial_data if initial_data else {}
-
-    def get_data(self):
-        return self._data
-
-    def set_data(self, data):
-        self._data = data        
 
 if __name__ == "__main__":
     publisher = Publisher()

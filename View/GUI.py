@@ -7,6 +7,7 @@ from Model.model import JSONDataSource
 from Model.pubsub import Subscriber, Publisher
 
 
+
 class DataViewerApp(QMainWindow, Subscriber):
     def __init__(self, data_source, publisher, parent=None):
         super().__init__(parent)
