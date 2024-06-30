@@ -1,6 +1,6 @@
 import unittest
 import pandas as pd
-from simpleMovingAverage import parse_data, calculate_sma, backtest, run_sma_and_backtest
+from Model.simpleMovingAverage import parse_data, calculate_sma, backtest, run_sma_and_backtest
 import json
 
 class TestTradingSystem(unittest.TestCase):

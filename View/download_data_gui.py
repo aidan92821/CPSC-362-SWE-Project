@@ -1,8 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QCalendarWidget, QPushButton, QMessageBox
 from PyQt5.QtCore import QDate, pyqtSignal
-import download_data
-from pubsub import Publisher
+import Model.download_data as download_data
+from Model.pubsub import Publisher
 
 class DownloadDataGUI(QMainWindow):
     """

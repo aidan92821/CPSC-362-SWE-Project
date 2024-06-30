@@ -1,6 +1,6 @@
 import unittest
 from download_data_gui import DataSourceAdapter
-from download_data import download_stock_data, save_to_json
+from Model.download_data import download_stock_data, save_to_json
 
 class TestDataSourceAdapter(unittest.TestCase):
     

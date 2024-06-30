@@ -1,8 +1,8 @@
 import sys
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QTimer, Qt
-from model import JSONDataSource, Publisher
-from view import DownloadDataGUI, CalendarPlotApp
+from Model.model import JSONDataSource, Publisher
+from View.view import DownloadDataGUI, CalendarPlotApp
 
 class Controller:
     def __init__(self, model, view):

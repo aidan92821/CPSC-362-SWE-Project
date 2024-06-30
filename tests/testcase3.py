@@ -2,7 +2,7 @@ import unittest
 from PyQt5.QtWidgets import QApplication
 from download_data_gui import DownloadDataGUI, DataSourceAdapter
 from unittest.mock import MagicMock
-from download_data import download_stock_data, save_to_json
+from Model.download_data import download_stock_data, save_to_json
 
 class TestDownloadDataGUI(unittest.TestCase):
     
