@@ -1,9 +1,11 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QVBoxLayout, QWidget, QLineEdit, QCalendarWidget, QPushButton, QMessageBox
 from PyQt5.QtCore import QDate, pyqtSignal
-import Model.download_data as download_data
+import json
+import pandas as pd
 from Model.pubsub import Publisher
 from Model.adapterpattern import get_historical_data, DataSourceType
+
 
 class DownloadDataGUI(QMainWindow):
     """
@@ -87,12 +89,27 @@ class DownloadDataGUI(QMainWindow):
         end_date = self.end_date.selectedDate().toString('yyyy-MM-dd')
 
         try:
-            data = download_data.download_stock_data(symbol, start_date, end_date)
-            download_data.save_to_json(data, f"{symbol}_data.json")
+            data = get_historical_data(symbol, start_date, end_date, DataSourceType.Yahoo)
+            self.save_to_json(data, f"{symbol}_data.json")
             self.symbol_input.clear()
             QMessageBox.information(self, 'Success', f"Data for {symbol} downloaded successfully.")
         except ValueError as e:
             QMessageBox.critical(self, 'Error', str(e))
+
+    def save_to_json(self, data, filename):
+        """
+        Saves the given data to a JSON file.
+        
+        Parameters
+        ----------
+        data : pandas.DataFrame
+            The data to be saved.
+        filename : str
+            The name of the JSON file.
+        """
+        data.reset_index(inplace=True)
+        data['Date'] = data['Date'].dt.strftime('%Y-%m-%d')
+        data.to_json(filename, orient='records', date_format='iso')
 
     def finish_downloads(self):
         """Emits the finished signal and closes the GUI."""
