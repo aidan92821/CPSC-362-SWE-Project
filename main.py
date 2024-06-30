@@ -1,30 +1,19 @@
 import sys
 from PyQt5.QtWidgets import QApplication
-from PyQt5.QtCore import Qt
-from View.download_data_gui import DownloadDataGUI
-from View.GUI import DataViewerApp
+from View.DownloadDisplayGUI import CombinedApp
+from Model.adapterpattern import DataSourceAdapter
 from Model.pubsub import Publisher
-from Model.model import JSONDataSource
 
 def main():
     app = QApplication(sys.argv)
 
-    data_publisher = Publisher()
+    data_source_adapter = DataSourceAdapter()
+    publisher = Publisher()
 
-    download_window = DownloadDataGUI(data_publisher)
-    data_source = JSONDataSource('.')  # Base path for the JSON files
+    main_window = CombinedApp(publisher, data_source_adapter)
+    main_window.show()
 
-    def show_main_gui():
-        download_window.close()
-        main_window = DataViewerApp(data_source, data_publisher)
-        main_window.show()
-        main_window.setAttribute(Qt.WA_DeleteOnClose)
-
-    download_window.finished.connect(show_main_gui)
-
-    download_window.show()
-
-    data_publisher.simulate_real_time_data()  # Start simulation
+    publisher.simulate_real_time_data()  # Start real-time data simulation
 
     sys.exit(app.exec_())
 

@@ -1,14 +1,13 @@
-import json
+from Model.QuandlAdaptee import QuandlDataSource
+from Model.YFinanceAdaptee import YFinanceDataSource
 
-class DataSourceInterface:
-    def get_data(self, ticker):
-        raise NotImplementedError("This method should be overridden.")
+class DataSourceAdapter:
+    def __init__(self):
+        self.quandl_source = QuandlDataSource()
+        self.yfinance_source = YFinanceDataSource()
 
-class JSONDataSource(DataSourceInterface):
-    def __init__(self, file_path):
-        self.file_path = file_path
-
-    def get_data(self, ticker):
-        with open(self.file_path, 'r') as file:
-            data = json.load(file)
-        return data.get(ticker, None)
+    def download_data(self, ticker, start_date, end_date, file_name):
+        if 'BCHARTS' in ticker:
+            self.quandl_source.save_to_json(ticker, start_date, end_date, file_name)
+        else:
+            self.yfinance_source.save_to_json(ticker, start_date, end_date, file_name)
